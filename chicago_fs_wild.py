@@ -87,8 +87,11 @@ class ChicagoFSWild(Dataset):
             imgs.append(patch_rgb)
             grays.append(patch_gray)
         
+        imgs = np.array([])
+        gray = np.array([])
         if len(imgs) > 0:
             imgs, gray = np.stack(imgs), np.stack(grays)[..., np.newaxis]
+            
         sample = {'imgs': imgs, 'gray': gray, 'label': label}
         print (type(self.transform))
         return self.transform(sample)
