@@ -41,7 +41,7 @@ class ChicagoFSWild(Dataset):
         self.map_size = map_size
         with open(lambda_x, 'r') as f:
             self.lambda_x = json.load(f)
-        assert scale_x in ['1', '2', '3', '4'], 'Invalid value for `scale_x` parameter: %d' % scale_x
+        assert scale_x in ['1', '2', '3', '4'], 'Invalid value for scale_x parameter: %d' % scale_x
         self.scale_x = scale_x
 
         self._parse()
@@ -61,7 +61,7 @@ class ChicagoFSWild(Dataset):
         return len(self.imdirs)
 
     def __getitem__(self, idx):
-        """Loads a sample video at the scale specified by the `scale_x` instance attribute."""
+        """Loads a sample video at the scale specified by the scale_x instance attribute."""
         subdir = self.imdirs[idx]
         label = list(map(lambda x: self.vocab_map[x], self.labels[idx]))
         fnames = [str(i).zfill(4) + '.jpg' for i in range(1, self.n_frames[idx]+1)]
@@ -75,7 +75,10 @@ class ChicagoFSWild(Dataset):
         imgs, grays = [], []
         for fname in fnames:
             rgb = cv.imread(os.path.join(self.img_dir, subdir, fname))
-            rgb = cv.cvtColor(rgb, cv.COLOR_BGR2RGB)
+            try:
+              rgb = cv.cvtColor(rgb, cv.COLOR_BGR2RGB)
+            except:
+              continue
             expand_rgb = cv.copyMakeBorder(rgb, u_pad, d_pad, l_pad, r_pad,
                                             cv.BORDER_CONSTANT, value=(0, 0, 0))
             patch_rgb = expand_rgb[y0 + u_pad: y1 + u_pad, x0 + l_pad: x1 + l_pad]
