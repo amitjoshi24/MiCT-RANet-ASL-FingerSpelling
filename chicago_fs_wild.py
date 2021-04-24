@@ -86,10 +86,11 @@ class ChicagoFSWild(Dataset):
             patch_gray = cv.cvtColor(patch_rgb, cv.COLOR_RGB2GRAY)
             imgs.append(patch_rgb)
             grays.append(patch_gray)
-
-        imgs, gray = np.stack(imgs), np.stack(grays)[..., np.newaxis]
+        
+        if len(imgs) > 0:
+            imgs, gray = np.stack(imgs), np.stack(grays)[..., np.newaxis]
         sample = {'imgs': imgs, 'gray': gray, 'label': label}
-
+        print (type(self.transform))
         return self.transform(sample)
 
     def to_cartesian_coord(self, polar_coord):
