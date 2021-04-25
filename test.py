@@ -92,7 +92,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
     total_frames = 0
     preds, labels = [], []
 
-    for i_batch, sample in enumerate(loader):
+    for sample in loader:
         if sample is None:
             continue
         # ensure that context initialization finishes before starting measuring time
