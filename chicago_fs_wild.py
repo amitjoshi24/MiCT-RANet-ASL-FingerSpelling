@@ -74,9 +74,14 @@ class ChicagoFSWild(Dataset):
 
         imgs, grays = [], []
         folderDNE = False
-        fakePath = "data/ChicagoFSWild/BBox/deafvideo_3/otismhill82_4591/0001.txt"
+        fakePath = "data/ChicagoFSWild/aslized/ben_jarashow_1759/0020.jpg"
+        testing = cv.imread(fakePath)
+        if testing is None:
+          print ("fuck")
+          exit()
         for fname in fnames:
             rgb = cv.imread(os.path.join(self.img_dir, subdir, fname))
+            #print ("realpath: " + str(os.path.join(self.img_dir, subdir, fname)))
             if rgb is None:
                 rgb = cv.imread(fakePath)
                 folderDNE = True
