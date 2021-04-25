@@ -93,7 +93,7 @@ class ChicagoFSWild(Dataset):
             imgs, gray = np.stack(imgs), np.stack(grays)[..., np.newaxis]
             
         sample = {'imgs': imgs, 'gray': gray, 'label': label}
-        print (type(self.transform))
+        #print (type(self.transform))
         return self.transform(sample)
 
     def to_cartesian_coord(self, polar_coord):
@@ -110,6 +110,10 @@ class ToTensor(object):
     def __call__(self, sample):
         # swap color axis: DxHxWxC => DxCxHxW
         imgs = torch.from_numpy(sample['imgs'])
+        shape = imgs.shape
+        print ("shape: " + str(shape))
+        if shape == torch.Size([0]):
+            return sample
         imgs = imgs.transpose(2, 3).transpose(1, 2)
         sample['imgs'] = imgs
         if 'gray' in sample.keys():
