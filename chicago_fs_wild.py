@@ -68,17 +68,20 @@ class ChicagoFSWild(Dataset):
         
         pad = self.lambda_x[subdir]['pad']
         l_pad, u_pad, r_pad, d_pad = pad['l'], pad['u'], pad['r'], pad['d']
-
+        
         # boxes are stored in polar-like coordinates
         x0, y0, x1, y1 = self.to_cartesian_coord(self.lambda_x[subdir][self.scale_x])
 
         imgs, grays = [], []
+        folderDNE = False
+        fakePath = "data/ChicagoFSWild/BBox/deafvideo_3/otismhill82_4591/0001.txt"
         for fname in fnames:
             rgb = cv.imread(os.path.join(self.img_dir, subdir, fname))
-            try:
-              rgb = cv.cvtColor(rgb, cv.COLOR_BGR2RGB)
-            except:
-              continue
+            if rgb is None:
+                rgb = cv.imread(fakePath)
+                folderDNE = True
+            rgb = cv.cvtColor(rgb, cv.COLOR_BGR2RGB)
+                
             expand_rgb = cv.copyMakeBorder(rgb, u_pad, d_pad, l_pad, r_pad,
                                             cv.BORDER_CONSTANT, value=(0, 0, 0))
             patch_rgb = expand_rgb[y0 + u_pad: y1 + u_pad, x0 + l_pad: x1 + l_pad]
@@ -92,7 +95,7 @@ class ChicagoFSWild(Dataset):
         
         imgs, gray = np.stack(imgs), np.stack(grays)[..., np.newaxis]
             
-        sample = {'imgs': imgs, 'gray': gray, 'label': label}
+        sample = {'imgs': imgs, 'gray': gray, 'label': label, 'folderDNE': folderDNE}
         #print (type(self.transform))
         return self.transform(sample)
 
@@ -109,8 +112,6 @@ class ToTensor(object):
 
     def __call__(self, sample):
         # swap color axis: DxHxWxC => DxCxHxW
-        if sample is None:
-            return sample
         imgs = torch.from_numpy(sample['imgs'])
         imgs = imgs.transpose(2, 3).transpose(1, 2)
         sample['imgs'] = imgs
@@ -130,8 +131,6 @@ class Normalize(object):
         self.std = torch.FloatTensor(std).view(1, 3, 1, 1)
 
     def __call__(self, sample):
-        if sample is None:
-            return sample
         sample['imgs'] = (sample['imgs'] / 255.0 - self.mean) / self.std
         return sample
 
@@ -143,8 +142,6 @@ class PriorToMap(object):
         return
 
     def __call__(self, sample):
-        if sample is None:
-            return sample
         priors = sample['priors']
         maps = [cv.resize(prior, (self.map_size, self.map_size)) for prior in priors]
         sample['maps'] = np.stack(maps, axis=0)
@@ -157,8 +154,6 @@ class Batchify(object):
         return
 
     def __call__(self, sample):
-        if sample is None:
-            return sample
         sample['imgs'] = sample['imgs'].unsqueeze(dim=0)
         sample['maps'] = sample['maps'].unsqueeze(dim=0)
         return sample
