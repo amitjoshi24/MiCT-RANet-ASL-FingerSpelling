@@ -93,7 +93,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
     preds, labels = [], []
 
     for sample in loader:
-        if sample is None:
+        if sample['folderDNE']:
             continue
         # ensure that context initialization finishes before starting measuring time
         torch.cuda.synchronize()
