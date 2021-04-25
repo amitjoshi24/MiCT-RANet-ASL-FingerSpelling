@@ -109,11 +109,9 @@ class ToTensor(object):
 
     def __call__(self, sample):
         # swap color axis: DxHxWxC => DxCxHxW
-        imgs = torch.from_numpy(sample['imgs'])
-        shape = imgs.shape
-        print ("shape: " + str(shape))
-        if shape == torch.Size([0]):
+        if sample is None:
             return sample
+        imgs = torch.from_numpy(sample['imgs'])
         imgs = imgs.transpose(2, 3).transpose(1, 2)
         sample['imgs'] = imgs
         if 'gray' in sample.keys():
@@ -132,6 +130,8 @@ class Normalize(object):
         self.std = torch.FloatTensor(std).view(1, 3, 1, 1)
 
     def __call__(self, sample):
+        if sample is None:
+            return sample
         sample['imgs'] = (sample['imgs'] / 255.0 - self.mean) / self.std
         return sample
 
@@ -143,6 +143,8 @@ class PriorToMap(object):
         return
 
     def __call__(self, sample):
+        if sample is None:
+            return sample
         priors = sample['priors']
         maps = [cv.resize(prior, (self.map_size, self.map_size)) for prior in priors]
         sample['maps'] = np.stack(maps, axis=0)
@@ -155,6 +157,8 @@ class Batchify(object):
         return
 
     def __call__(self, sample):
+        if sample is None:
+            return sample
         sample['imgs'] = sample['imgs'].unsqueeze(dim=0)
         sample['maps'] = sample['maps'].unsqueeze(dim=0)
         return sample
