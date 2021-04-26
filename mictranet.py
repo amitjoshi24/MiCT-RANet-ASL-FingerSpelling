@@ -52,7 +52,7 @@ class MiCTRANet(nn.Module):
                 h = self.attn_cell(h, feat_maps[i], prior_maps[i])
                 out_lstm.append(h[0])
         logits = self.fc(torch.stack(out_lstm, 0))
-        probs = F.softmax(logits, dim=-1).transpose(0, 1)
+        probs = F.softmax(logits, dim=-1).transpose(0, 1) # We need F.logsoftmax for CTC loss
         return probs, h
 
 
