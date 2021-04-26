@@ -4,6 +4,8 @@ import os
 import argparse
 import configparser
 import torch
+import torch.nn as nn
+import torch.optim as optim
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 from torch.utils.data import DataLoader
@@ -83,6 +85,68 @@ def get_attention_maps(priors, map_size):
     maps = torch.from_numpy(np.asarray(maps)).unsqueeze(0)
     return maps
 
+def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device):
+    encoder.to(device)
+    encoder.eval()
+    hidden_size = encoder.attn_cell.hidden_size
+    run_times = list()
+    total_frames = 0
+    preds, labels = [], []
+
+    training_steps = 0
+    
+    criterion = nn.CTCLoss()
+    optimizer = optim.Adam(encoder.parameters(), lr=0.001)
+    
+    epoch = 0
+    while training_steps < 5000:
+        total_loss = 0.0
+        print("Starting epoch: " + epoch)
+        for sample in loader:
+            if sample['folderDNE']:
+                continue
+            # ensure that context initialization finishes before starting measuring time
+            torch.cuda.synchronize()
+            start = time.perf_counter()
+
+            imgs = sample['imgs']  # [B, L, C, H, W]
+            total_frames += imgs.size()[1]
+            labels.append(sample['label'].cpu().numpy()[0])
+
+            flows = get_optical_flows(sample['gray'].numpy()[0], img_size)
+            priors = get_attention_priors(flows)  # temporal averaging of optical flows
+            maps = get_attention_maps(priors, map_size)  # resize priors to CNN features maps size
+
+            imgs = imgs.to(device)
+            maps = maps.to(device)
+
+            optimizer.zero_grad()
+            
+            h0 = init_lstm_hidden(len(imgs), hidden_size, device=device)
+            probs = encoder(imgs, h0, maps)[0].cpu().numpy()[0]
+
+            torch.cuda.synchronize()  # wait for finish
+            
+            probs = torch.log(probs)
+            
+            loss = criterion(probs, sample['label'], len(probs), len(sample['label'])
+            
+            total_loss += loss.item()
+            loss.backward()
+            optimizer.step()
+
+            end = time.perf_counter()
+            run_times.append(end-start)
+        
+        print(total_loss)
+        epoch += 1
+
+    run_times.pop(0)
+
+    print('Mean sample running time: {:.3f} sec'.format(np.mean(run_times)))
+    print('{:.1f} FPS'.format(total_frames / np.sum(run_times)))
+    
+    return encoder
 
 def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device):
     encoder.to(device)
@@ -110,10 +174,10 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
         imgs = imgs.to(device)
         maps = maps.to(device)
 
-        with torch.no_grad():
+        with torch.no_grad(): # this needs to go in training
             h0 = init_lstm_hidden(len(imgs), hidden_size, device=device)
             probs = encoder(imgs, h0, maps)[0].cpu().numpy()[0]
-
+        
         torch.cuda.synchronize()  # wait for finish
         pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True)
         preds.append(np.asarray(pred))
@@ -159,6 +223,7 @@ def main():
                               vocab_map, transform=tsfm, lambda_x=data_cfg.get('lambda_x'),
                               scale_x=args.scale_x)
 
+    #train_loader = DataLoader(train_data, batch_size=, shuffle=False, num_workers=4)
     test_loader = DataLoader(test_data, batch_size=1, shuffle=False, num_workers=4)
 
     encoder = MiCTRANet(backbone=model_cfg.get('backbone'),
