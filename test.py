@@ -127,7 +127,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
 
             torch.cuda.synchronize()  # wait for finish
             
-            probs = torch.log(probs)
+            probs = np.log(probs)
             
 
             loss = criterion(probs, sample['label'], len(probs), len(sample['label']))
