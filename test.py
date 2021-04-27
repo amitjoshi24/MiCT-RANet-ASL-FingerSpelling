@@ -219,11 +219,17 @@ def main():
     img_std = [float(x) for x in img_cfg['img_std'].split(',')]
     tsfm = transforms.Compose([ToTensor(), Normalize(img_mean, img_std)])
 
+
+    train_data = ChicagoFSWild('train', data_cfg.get('img_dir'), data_cfg.get('csv'),
+                              vocab_map, transform=tsfm, lambda_x=data_cfg.get('lambda_x'),
+                              scale_x=args.scale_x)
+
+    train_loader = DataLoader(train_data, batch_size=1, shuffle=False, num_workers=4)
+
     test_data = ChicagoFSWild('test', data_cfg.get('img_dir'), data_cfg.get('csv'),
                               vocab_map, transform=tsfm, lambda_x=data_cfg.get('lambda_x'),
                               scale_x=args.scale_x)
 
-    #train_loader = DataLoader(train_data, batch_size=, shuffle=False, num_workers=4)
     test_loader = DataLoader(test_data, batch_size=1, shuffle=False, num_workers=4)
 
     encoder = MiCTRANet(backbone=model_cfg.get('backbone'),
@@ -237,6 +243,11 @@ def main():
 
     # count parameter number
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
+
+
+    encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
+                   model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device)
+
 
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
