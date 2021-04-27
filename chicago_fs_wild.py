@@ -31,7 +31,7 @@ class ChicagoFSWild(Dataset):
         :param lambda_x: the JSON filename of the dataset split.
         :param scale_x: the zooming factor to apply to the samples.
         """
-        assert split == 'test', 'Unknown split: %s'.format(split)
+        #assert split == 'test', 'Unknown split: %s'.format(split)
         self.split = split
         self.img_dir = img_dir
         self.fcsv = fcsv
