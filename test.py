@@ -101,7 +101,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     epoch = 0
     while training_steps < 5000:
         total_loss = None
-        print("Starting epoch: " + epoch)
+        print("Starting epoch: " + str(epoch))
         for sample in loader:
             if sample['folderDNE']:
                 continue
