@@ -100,7 +100,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     
     epoch = 0
     while training_steps < 5000:
-        total_loss = 0.0
+        total_loss = None
         print("Starting epoch: " + epoch)
         for sample in loader:
             if sample['folderDNE']:
@@ -129,9 +129,13 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             
             probs = torch.log(probs)
             
+
             loss = criterion(probs, sample['label'], len(probs), len(sample['label'])
-            
-            total_loss += loss.item()
+            if total_loss is None:
+                total_loss = loss.item()
+            else:
+                total_loss += loss.item()
+                
             loss.backward()
             optimizer.step()
 
@@ -145,7 +149,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
 
     print('Mean sample running time: {:.3f} sec'.format(np.mean(run_times)))
     print('{:.1f} FPS'.format(total_frames / np.sum(run_times)))
-    
+
     return encoder
 
 def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device):
@@ -248,7 +252,7 @@ def main():
     encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device)
 
-
+ 
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
                    args.beam_size, device)
