@@ -129,8 +129,11 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             
             probs = torch.log(probs)
             
-            print ("sample label: " + str(sample['label']))
-            print ("probs: " + str(probs))
+            #print ("sample label: " + str(sample['label']))
+            #print ("probs: " + str(probs))
+
+            print ("sample label shape: " + str(sample['label'].shape))
+            print ("probs shape: " + str(probs.shape))
             '''input_lengths = torch.full(size=(1,), fill_value=len(sample['label']), dtype=torch.long)
 
             target_lengths = torch.randint(low=1, high=len(sample['label']), size=(1,), dtype=torch.long)
