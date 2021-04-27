@@ -123,7 +123,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             optimizer.zero_grad()
             
             h0 = init_lstm_hidden(len(imgs), hidden_size, device=device)
-            probs = encoder(imgs, h0, maps)[0].cpu().detach.numpy()[0]
+            probs = encoder(imgs, h0, maps)[0].cpu().detach().numpy()[0]
 
             torch.cuda.synchronize()  # wait for finish
             
