@@ -130,7 +130,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             probs = torch.log(probs)
             
 
-            loss = criterion(probs, sample['label'], len(probs), len(sample['label']))
+            loss = criterion(probs, sample['label'], (len(probs), len(sample['label'])))
             if total_loss is None:
                 total_loss = loss.item()
             else:
