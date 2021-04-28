@@ -242,7 +242,7 @@ def main():
     tsfm = transforms.Compose([ToTensor(), Normalize(img_mean, img_std)])
 
 
-    train_data = ChicagoFSWild('train', data_cfg.get('img_dir'), data_cfg.get('csv'),
+    train_data = ChicagoFSWild('train', data_cfg.get('img_dir'), data_cfg.get('ChicagoFSWild.csv'),
                               vocab_map, transform=tsfm, lambda_x=data_cfg.get('lambda_x'),
                               scale_x=args.scale_x)
 
