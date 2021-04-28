@@ -140,8 +140,8 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             N = 1 # Batch size
             S = sample['label'].shape[1] # Target size length
 
-            input_lengths = T
-            target_lengths = S
+            input_lengths = torch.full(size=(N,), fill_value=T, dtype=torch.long)
+            target_lengths = torch.full(size=(N,), fill_value=S, dtype=torch.long)
 
             loss = criterion(probs, sample['label'], input_lengths, target_lengths)
             if total_loss is None:
