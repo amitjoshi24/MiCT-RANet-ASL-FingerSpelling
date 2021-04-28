@@ -147,4 +147,6 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, blank_in
     if digit is False:
         pred = list(map(lambda x: int_to_char[x], pred))
 
+    print(pred)
+    
     return pred
