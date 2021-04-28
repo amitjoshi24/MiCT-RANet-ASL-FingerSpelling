@@ -56,6 +56,8 @@ class ChicagoFSWild(Dataset):
             if len(splitted) == 3: # test csv
                 imdir, label, nframes = splitted
             else: # train csv
+                if i == 0:
+                    continue
                 imdir = splitted[0]
                 label = splitted[7]
                 nframes = splitted[3]
