@@ -52,7 +52,15 @@ class ChicagoFSWild(Dataset):
         print('%d %s samples' % (len(lns), self.split))
         self.imdirs, self.labels, self.n_frames = [], [], []
         for i in range(len(lns)):
-            imdir, label, nframes = lns[i].strip().split(',')
+            splitted = lns[i].strip().split(',')
+            if len(splitted) == 3: # test csv
+                imdir, label, nframes = splitted
+            else: # train csv
+                imdir = splitted[0]
+                label = splitted[7]
+                nframes = splitted[3]
+
+            #imdir, label, nframes = lns[i].strip().split(',')
             self.imdirs.append(imdir)
             self.labels.append(label)
             self.n_frames.append(int(nframes))
