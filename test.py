@@ -191,8 +191,6 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
         
         torch.cuda.synchronize()  # wait for finish
         pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True)
-        print(pred)
-        preds.append(np.asarray(pred))
         end = time.perf_counter()
         run_times.append(end-start)
 
