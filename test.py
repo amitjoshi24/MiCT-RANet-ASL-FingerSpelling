@@ -99,7 +99,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     optimizer = optim.Adam(encoder.parameters(), lr=0.001)
     
     epoch = 0
-    while training_steps < 2:
+    while epoch < 2:
         total_loss = None
         print("Starting epoch: " + str(epoch))
         for sample in loader:
