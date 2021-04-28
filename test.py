@@ -143,6 +143,8 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             input_lengths = torch.full(size=(N,), fill_value=T, dtype=torch.long)
             target_lengths = torch.full(size=(N,), fill_value=S, dtype=torch.long)
 
+            probs = probs.reshape(T,N,C)
+
             loss = criterion(probs, sample['label'], input_lengths, target_lengths)
             if total_loss is None:
                 total_loss = loss.item()
