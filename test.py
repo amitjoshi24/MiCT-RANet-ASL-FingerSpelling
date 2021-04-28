@@ -99,8 +99,8 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     optimizer = optim.Adam(encoder.parameters(), lr=0.001)
     
     epoch = 0
-    while epoch < 2:
-        total_loss = None
+    while epoch < 1:
+        total_loss = 0
         print("Starting epoch: " + str(epoch))
         for sample in loader:
             #print ("new sample")
@@ -147,10 +147,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             probs = probs.reshape(T,N,C)
 
             loss = criterion(probs, sample['label'], input_lengths, target_lengths)
-            if total_loss is None:
-                total_loss = loss.item()
-            else:
-                total_loss += loss.item()
+            total_loss += loss.item()
 
             loss.backward()
             optimizer.step()
