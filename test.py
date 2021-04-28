@@ -103,6 +103,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
         total_loss = None
         print("Starting epoch: " + str(epoch))
         for sample in loader:
+            print ("new sample")
             if sample['folderDNE']:
                 continue
             # ensure that context initialization finishes before starting measuring time
