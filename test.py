@@ -96,7 +96,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     training_steps = 0
     
     criterion = nn.CTCLoss()
-    optimizer = optim.Adam(encoder.parameters(), lr=0.001)
+    optimizer = optim.Adam(encoder.parameters(), lr=1e-6)
     
     epoch = 0
     while epoch < 1:
