@@ -96,14 +96,14 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
     training_steps = 0
     
     criterion = nn.CTCLoss()
-    optimizer = optim.Adam(encoder.parameters(), lr=0.001)
+    optimizer = optim.Adam(encoder.parameters(), lr=0.01)
     
     epoch = 0
-    while training_steps < 5000:
+    while training_steps < 5:
         total_loss = None
         print("Starting epoch: " + str(epoch))
         for sample in loader:
-            print ("new sample")
+            #print ("new sample")
             if sample['folderDNE']:
                 continue
             # ensure that context initialization finishes before starting measuring time
