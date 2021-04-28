@@ -228,7 +228,7 @@ def main():
     for item in vocab_map.items():
         print(item)
     
-    for item in inv_vocab_map.items()
+    for item in inv_vocab_map.items():
         print(item)
 
     # image pre-processing
