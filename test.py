@@ -132,11 +132,17 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             #print ("sample label: " + str(sample['label']))
             #print ("probs: " + str(probs))
 
-            print ("sample label shape: " + str(sample['label'].shape))
-            print ("probs shape: " + str(probs.shape))
-            '''input_lengths = torch.full(size=(1,), fill_value=len(sample['label']), dtype=torch.long)
+            #print ("sample label shape: " + str(sample['label'].shape))
+            #print ("probs shape: " + str(probs.shape))
 
-            target_lengths = torch.randint(low=1, high=len(sample['label']), size=(1,), dtype=torch.long)
+            T = probs.shape[0] # Input size length
+            C = probs.shape[1] # Number of classes (32 for us)
+            N = 1 # Batch size
+            S = sample['label'].shape[1] # Target size length
+
+            input_lengths = T
+            target_lengths = S
+
             loss = criterion(probs, sample['label'], input_lengths, target_lengths)
             if total_loss is None:
                 total_loss = loss.item()
@@ -144,7 +150,8 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
                 total_loss += loss.item()
 
             loss.backward()
-            optimizer.step()'''
+            optimizer.step()
+
 
 
             end = time.perf_counter()
