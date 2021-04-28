@@ -129,12 +129,6 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
             torch.cuda.synchronize()  # wait for finish
             
             probs = torch.log(probs)
-            
-            #print ("sample label: " + str(sample['label']))
-            #print ("probs: " + str(probs))
-
-            #print ("sample label shape: " + str(sample['label'].shape))
-            #print ("probs shape: " + str(probs.shape))
 
             T = probs.shape[0] # Input size length
             C = probs.shape[1] # Number of classes (32 for us)
@@ -151,8 +145,6 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
 
             loss.backward()
             optimizer.step()
-
-
 
             end = time.perf_counter()
             run_times.append(end-start)
