@@ -137,6 +137,9 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, blank_in
         beam_idx = list(map(lambda x: merge_beam_idx[x], ntopk_idx))
         for b in range(len(beam_idx)):
             beam_idx[b] = list(map(lambda x: char_to_int[x], beam_idx[b]))
+        for b2 in beam_idx:
+            print(str(int_to_char[b2]))
+        print("\n")
         beam_prob = list(map(lambda x: merge_beam_prob[x], ntopk_idx))
 
     if blank_index in beam_idx[-1]:
