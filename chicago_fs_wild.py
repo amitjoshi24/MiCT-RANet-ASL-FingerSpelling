@@ -58,9 +58,9 @@ class ChicagoFSWild(Dataset):
             else: # train csv
                 if i == 0:
                     continue
-                imdir = splitted[0]
-                label = splitted[7]
-                nframes = splitted[3]
+                imdir = splitted[1]
+                label = splitted[8]
+                nframes = splitted[4]
 
             #imdir, label, nframes = lns[i].strip().split(',')
             self.imdirs.append(imdir)
