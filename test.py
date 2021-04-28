@@ -191,6 +191,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
         
         torch.cuda.synchronize()  # wait for finish
         pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True)
+        print(pred)
         preds.append(np.asarray(pred))
         end = time.perf_counter()
         run_times.append(end-start)
@@ -256,9 +257,10 @@ def main():
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
 
 
+    """
     encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device)
-
+    """
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
