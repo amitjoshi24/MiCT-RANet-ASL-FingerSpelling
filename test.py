@@ -224,6 +224,12 @@ def main():
     device = torch.device(device)
 
     vocab_map, inv_vocab_map, char_list = get_ctc_vocab(char_list)
+    
+    for item in vocab_map.items():
+        print(item)
+    
+    for item in inv_vocab_map.items()
+        print(item)
 
     # image pre-processing
     img_mean = [float(x) for x in img_cfg['img_mean'].split(',')]
