@@ -93,12 +93,14 @@ def compute_acc(preds, labels, costs=(7, 7, 10)):
         raise ZeroDivisionError('Empty labels')
     return acc
 
-def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, blank_index=0):
+def beam_decode_old(prob, beam_size, int_to_char, char_to_int, digit=False, blank_index=0):
     # prob: [seq_len, num_labels+1], numpy array
     seqlen = len(prob)
     beam_idx = np.argsort(prob[0, :])[-beam_size:].tolist()
     beam_prob = list(map(lambda x: math.log(prob[0, x]), beam_idx))
     beam_idx = list(map(lambda x: [x], beam_idx))
+
+    print (beam_idx)
 
     for t in range(1, seqlen):
         topk_idx = np.argsort(prob[t, :])[-beam_size:].tolist()
