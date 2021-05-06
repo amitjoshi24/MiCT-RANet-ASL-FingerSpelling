@@ -152,11 +152,13 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
             ntopk_idx = np.argsort(np.array(merge_beam_prob))[-beam_size:].tolist()
         else:
             ntopk_idx = np.argsort(np.array(merge_beam_prob_lm))[-beam_size:].tolist()
-   
+        
+
+        print (beam_idx)
+        
         for b in range(len(beam_idx)):
             beam_idx[b] = list(map(lambda x: char_to_int[x], beam_idx[b]))
 
-        print (ntopk_idx)
         beam_prob = list(map(lambda x: merge_beam_prob[x], ntopk_idx))
 
     if blank_index in beam_idx[-1]:
