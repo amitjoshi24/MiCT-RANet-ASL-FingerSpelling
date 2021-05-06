@@ -85,7 +85,7 @@ def get_attention_maps(priors, map_size):
     maps = torch.from_numpy(np.asarray(maps)).unsqueeze(0)
     return maps
 
-def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device):
+def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, lm_scorer):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -159,7 +159,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
 
     return encoder
 
-def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device):
+def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, lm_scorer):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -190,7 +190,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
             probs = encoder(imgs, h0, maps)[0].cpu().numpy()[0]
         
         torch.cuda.synchronize()  # wait for finish
-        pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True)
+        pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True, scorer=lm_scorer)
         preds.append(np.asarray(pred))
         end = time.perf_counter()
         run_times.append(end-start)
@@ -217,6 +217,10 @@ def main():
     config.read(args.conf)
     model_cfg, lang_cfg = config['MODEL'], config['LANG']
     img_cfg, data_cfg = config['IMAGE'], config['DATA']
+    if config['LM'] == "GPT":
+        lm_scorer = "GPT"
+    else:
+        lm_scorer = None
     char_list = lang_cfg['chars']
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -258,12 +262,12 @@ def main():
 
     
     encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
-                   model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device)
+                   model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, lm_scorer)
     
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device)
+                   args.beam_size, device, lm_scorer)
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
