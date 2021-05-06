@@ -281,7 +281,7 @@ def main():
 
     #tokenizer.to(device)
 
-    lm_scorer = Scorer(languageModel, tokenizer)
+    lm_scorer = Scorer(languageModel, tokenizer, device)
     # count parameter number
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
     
