@@ -22,8 +22,9 @@ class Scorer(object):
 
     def get_score(self, string):
         tokenize_input = self.tokenizer.tokenize(string)
+        print ("tokenize_input: " + str(tokenize_input))
         tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)])
-        print ("tensor_input: " + str(tensor_input))
+        #print ("tensor_input: " + str(tensor_input))
         outputs=self.languageModel(tensor_input, labels=tensor_input)
 
         return -len(string) * outputs.loss, outputs.loss
