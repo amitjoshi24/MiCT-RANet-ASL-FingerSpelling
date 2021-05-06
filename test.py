@@ -15,6 +15,8 @@ import cv2 as cv
 from chicago_fs_wild import (ChicagoFSWild, ToTensor, Normalize)
 from mictranet import MiCTRANet, init_lstm_hidden
 from utils import *
+from scorer import Scorer
+from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
 
 
 def frobenius_norm(img1, img2):
@@ -86,9 +88,9 @@ def get_attention_maps(priors, map_size):
     return maps
 
 
-def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, lm_scorer):
+def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, lm_scorer, tokenizer):
     encoder.to(device)
-    encoder.eval()
+    encoder.train()
     hidden_size = encoder.attn_cell.hidden_size
     run_times = list()
     total_frames = 0
@@ -100,6 +102,10 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device,
     optimizer = optim.Adam(encoder.parameters(), lr=1e-6)
     
     epoch = 0
+
+    lmWeight = 0.24
+    insertionDeletionBias = 0.1003
+
     while epoch < 1:
         total_loss = 0
         print("Starting epoch: " + str(epoch))
@@ -140,11 +146,13 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device,
             target_lengths = torch.full(size=(N,), fill_value=S, dtype=torch.long)
 
             probs = probs.reshape(T,N,C)
+            #with torch.no_grad():
 
             loss = criterion(probs, sample['label'], input_lengths, target_lengths)
             total_loss += loss.item()
 
             loss.backward()
+            torch.nn.utils.clip_grad_norm(encoder.parameters(), 1.0)
             optimizer.step()
 
             end = time.perf_counter()
@@ -161,7 +169,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device,
     return encoder
 
 
-def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, lm_scorer):
+def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, lm_scorer, tokenizer):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -192,7 +200,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
             probs = encoder(imgs, h0, maps)[0].cpu().numpy()[0]
         
         torch.cuda.synchronize()  # wait for finish
-        pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True, scorer=lm_scorer)
+        pred = beam_decode(probs, beam_size, int_to_char, char_to_int, digit=True, scorer=lm_scorer, beta = 0.24, gamma = 0.1003)
         preds.append(np.asarray(pred))
         end = time.perf_counter()
         run_times.append(end-start)
@@ -219,10 +227,10 @@ def main():
     config.read(args.conf)
     model_cfg, lang_cfg = config['MODEL'], config['LANG']
     img_cfg, data_cfg = config['IMAGE'], config['DATA']
-    if config['LM']['lm'] == "gpt":
+    '''if config['LM']['lm'] == "gpt":
         lm_scorer = "gpt"
     else:
-        lm_scorer = None
+        lm_scorer = None'''
     char_list = lang_cfg['chars']
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -258,21 +266,23 @@ def main():
     print('Loading weights from: %s' % model_cfg['model_pth'])
     encoder.load_state_dict(torch.load(model_cfg['model_pth']))
 
+    languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
 
-    languageModel = torch.load(model_cfg['language_model_pth'])
-    languageModel.eval()
+    # loading tokenizer from the saved model path
+    tokenizer_save_path = "data/tokenized_data"
+    tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_save_path)
+
+    lm_scorer = Scorer(languageModel, tokenizer)
     # count parameter number
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
-
-
     
     encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
-    model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel)
+    model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel, tokenizer)
     
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device, languageModel)
+                   args.beam_size, device, languageModel, tokenizer)
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
