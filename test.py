@@ -266,7 +266,8 @@ def main():
     print('Loading weights from: %s' % model_cfg['model_pth'])
     encoder.load_state_dict(torch.load(model_cfg['model_pth']))
 
-    languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
+    #languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
+    languageModel = None
 
     # loading tokenizer from the saved model path
     tokenizer_save_path = "data/tokenized_data"
@@ -277,12 +278,12 @@ def main():
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
     
     #encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
-    #model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel)
+    #model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, lm_scorer)
     
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device, languageModel)
+                   args.beam_size, device, None) # last param should be lm_scorer
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
