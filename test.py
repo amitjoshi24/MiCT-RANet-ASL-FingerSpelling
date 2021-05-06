@@ -179,6 +179,7 @@ def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_siz
     sampleNum = 0
     for sample in loader:
         print ("sampleNum: " + str(sampleNum))
+        sampleNum += 1
         if sample['folderDNE']:
             continue
         # ensure that context initialization finishes before starting measuring time
