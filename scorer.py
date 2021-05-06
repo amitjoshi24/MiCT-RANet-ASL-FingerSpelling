@@ -38,6 +38,7 @@ class Scorer(object):
         print ("outputs.loss: " + str(outputs.loss))
         return -log(abs(outputs.loss) + 1e-6), outputs.loss
 
+
     def get_score_fast(self, strings):
         strings = [''.join(x) for x in strings]
         scores = [self.get_score(string)[0] for string in strings]
