@@ -267,6 +267,7 @@ def main():
     print('Loading weights from: %s' % model_cfg['model_pth'])
     encoder.load_state_dict(torch.load(model_cfg['model_pth']))
 
+    print('Loading weights from: %s' % model_cfg['language_model_pth'])
     languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
     #languageModel = None
 
