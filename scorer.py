@@ -30,7 +30,7 @@ class Scorer(object):
         if len(tokenize_input) < 1:
             tokenize_input.append('<unk>')
 
-        print ("tokenize_input: " + str(tokenize_input))
+        #print ("tokenize_input: " + str(tokenize_input))
         tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)]).to(self.device)
         #print ("tensor_input: " + str(tensor_input))
         outputs=self.languageModel(tensor_input, labels=tensor_input)
