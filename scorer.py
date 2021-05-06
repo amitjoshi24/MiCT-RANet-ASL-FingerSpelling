@@ -2,7 +2,7 @@ import sys
 import torch
 import torch.nn as nn
 from collections import defaultdict
-
+from math import log
 
 class Scorer(object):
     '''def __init__(self, char_list, model_path, rnn_type, ninp, nhid, nlayers, device):
@@ -35,7 +35,7 @@ class Scorer(object):
         #print ("tensor_input: " + str(tensor_input))
         outputs=self.languageModel(tensor_input, labels=tensor_input)
 
-        return -len(string) * outputs.loss, outputs.loss
+        return log(-len(string) * outputs.loss), outputs.loss
 
     def get_score_fast(self, strings):
         strings = [''.join(x) for x in strings]
