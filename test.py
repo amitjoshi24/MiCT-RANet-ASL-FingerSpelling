@@ -217,8 +217,8 @@ def main():
     config.read(args.conf)
     model_cfg, lang_cfg = config['MODEL'], config['LANG']
     img_cfg, data_cfg = config['IMAGE'], config['DATA']
-    if config['LM'] == "GPT":
-        lm_scorer = "GPT"
+    if config['LM']['lm'] == "gpt":
+        lm_scorer = "gpt"
     else:
         lm_scorer = None
     char_list = lang_cfg['chars']
