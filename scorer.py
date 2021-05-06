@@ -16,9 +16,11 @@ class Scorer(object):
         self.rnn.eval()
         self.history = defaultdict(tuple)'''
 
-    def __init__(self, languageModel, tokenizer):
+    def __init__(self, languageModel, tokenizer, device):
         self.languageModel = languageModel
         self.tokenizer = tokenizer
+        self.device = device
+        self.languageModel.to(self.device)
 
     def get_score(self, string):
         tokenize_input = self.tokenizer.tokenize(string)
@@ -29,7 +31,7 @@ class Scorer(object):
             tokenize_input.append('<unk>')
 
         print ("tokenize_input: " + str(tokenize_input))
-        tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)])
+        tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)]).to(self.device)
         #print ("tensor_input: " + str(tensor_input))
         outputs=self.languageModel(tensor_input, labels=tensor_input)
 

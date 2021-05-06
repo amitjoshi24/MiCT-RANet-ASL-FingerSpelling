@@ -272,7 +272,7 @@ def main():
     print('Loading weights from: %s' % model_cfg['language_model_pth'])
     languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
 
-    languageModel.to(device)
+
     #languageModel = None
 
     # loading tokenizer from the saved model path
