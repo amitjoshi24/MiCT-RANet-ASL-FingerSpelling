@@ -28,6 +28,6 @@ class Scorer(object):
 
     def get_score_fast(self, strings):
         strings = [''.join(x) for x in strings]
-        scores = [get_score(string)[0] for string in strings]
+        scores = [self.get_score(string)[0] for string in strings]
         return scores
 
