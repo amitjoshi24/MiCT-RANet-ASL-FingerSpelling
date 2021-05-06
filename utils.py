@@ -99,7 +99,7 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
     beam_idx = np.argsort(prob[0, :])[-beam_size:].tolist()
     beam_prob = list(map(lambda x: math.log(prob[0, x]), beam_idx))
     beam_idx = list(map(lambda x: [x], beam_idx))
-    print ("beamidx1: " + str(beam_idx))
+    #print ("beamidx1: " + str(beam_idx))
     for t in range(1, seqlen):
         topk_idx = np.argsort(prob[t, :])[-beam_size:].tolist()
         topk_prob = list(map(lambda x: prob[t, x], topk_idx))
@@ -135,7 +135,7 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
         if scorer is not None:
             merge_beam_prob_lm, ins_bonus, strings = [], [], []
             for b in range(len(merge_beam_prob)):
-                if merge_beam_idx[b][-1] == self.int_to_char[self.blank_index]:
+                if merge_beam_idx[b][-1] == int_to_char[blank_index]:
                     strings.append(merge_beam_idx[b][:-1])
                     ins_bonus.append(len(merge_beam_idx[b][:-1]))
                 else:
@@ -153,10 +153,10 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
             ntopk_idx = np.argsort(np.array(merge_beam_prob_lm))[-beam_size:].tolist()
 
         beam_idx = list(map(lambda x: merge_beam_idx[x], ntopk_idx))
-        print ("beamidx2: " + str(beam_idx))
+        #print ("beamidx2: " + str(beam_idx))
         for b in range(len(beam_idx)):
             beam_idx[b] = list(map(lambda x: char_to_int[x], beam_idx[b]))
-        print ("beamidx3: " + str(beam_idx))
+        #print ("beamidx3: " + str(beam_idx))
 
         beam_prob = list(map(lambda x: merge_beam_prob[x], ntopk_idx))
 
