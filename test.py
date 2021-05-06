@@ -88,7 +88,7 @@ def get_attention_maps(priors, map_size):
     return maps
 
 
-def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, lm_scorer, tokenizer):
+def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, lm_scorer):
     encoder.to(device)
     encoder.train()
     hidden_size = encoder.attn_cell.hidden_size
@@ -169,7 +169,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device,
     return encoder
 
 
-def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, lm_scorer, tokenizer):
+def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, lm_scorer):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -276,13 +276,13 @@ def main():
     # count parameter number
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
     
-    encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
-    model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel, tokenizer)
+    #encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
+    #model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel)
     
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device, languageModel, tokenizer)
+                   args.beam_size, device, languageModel)
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
