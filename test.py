@@ -271,11 +271,15 @@ def main():
 
     print('Loading weights from: %s' % model_cfg['language_model_pth'])
     languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
+
+    languageModel.to(device)
     #languageModel = None
 
     # loading tokenizer from the saved model path
     tokenizer_save_path = "data/tokenized_data"
     tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_save_path)
+
+    tokenizer.to(device)
 
     lm_scorer = Scorer(languageModel, tokenizer)
     # count parameter number
