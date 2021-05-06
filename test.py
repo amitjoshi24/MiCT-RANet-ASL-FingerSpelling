@@ -279,7 +279,7 @@ def main():
     tokenizer_save_path = "data/tokenized_data"
     tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_save_path)
 
-    tokenizer.to(device)
+    #tokenizer.to(device)
 
     lm_scorer = Scorer(languageModel, tokenizer)
     # count parameter number
