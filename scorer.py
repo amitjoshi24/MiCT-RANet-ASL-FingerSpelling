@@ -2,7 +2,6 @@ import sys
 import torch
 import torch.nn as nn
 from collections import defaultdict
-from rnn import RNN
 
 
 class Scorer(object):
