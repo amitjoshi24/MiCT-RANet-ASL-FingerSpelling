@@ -85,7 +85,7 @@ def get_attention_maps(priors, map_size):
     maps = torch.from_numpy(np.asarray(maps)).unsqueeze(0)
     return maps
 
-def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device):
+def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device, languageModel):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -159,7 +159,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device)
 
     return encoder
 
-def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device):
+def test(encoder, loader, img_size, map_size, int_to_char, char_to_int, beam_size, device, languageModel):
     encoder.to(device)
     encoder.eval()
     hidden_size = encoder.attn_cell.hidden_size
@@ -252,18 +252,21 @@ def main():
     print('Loading weights from: %s' % model_cfg['model_pth'])
     encoder.load_state_dict(torch.load(model_cfg['model_pth']))
 
+
+    languageModel = torch.load(model_cfg['language_model_pth'])
+    languageModel.eval()
     # count parameter number
     print('Total number of encoder parameters: %d' % sum(p.numel() for p in encoder.parameters()))
 
 
     
     encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
-                   model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device)
+                   model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, languageModel)
     
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device)
+                   args.beam_size, device, languageModel)
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
