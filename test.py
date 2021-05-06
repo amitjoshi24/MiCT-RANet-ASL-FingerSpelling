@@ -103,7 +103,7 @@ def train(encoder, loader, img_size, map_size, int_to_char, char_to_int, device,
     
     epoch = 0
 
-    lmWeight = 0.24
+    lmWeight = 0.5
     insertionDeletionBias = 0
 
     while epoch < 1:
