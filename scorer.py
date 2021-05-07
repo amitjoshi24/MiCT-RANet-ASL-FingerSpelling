@@ -25,8 +25,6 @@ class Scorer(object):
     def get_score(self, string):
         
         #print(string)
-        string_idx = map(lambda x: self.vocab_map[x], string)
-        print ("whore: " + str(string_idx))
         tokenize_input = self.tokenizer.tokenize(string)
         #print ("tokenize_input: " + str(tokenize_input))
 
@@ -44,7 +42,7 @@ class Scorer(object):
             loss = 0
         else:
             loss = loss.item()
-        return -(len(string_idx) - 1) * loss, loss
+        return -(len(tokenize_input) - 1) * loss, loss
 
 
     def get_score_fast(self, strings):
