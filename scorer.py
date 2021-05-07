@@ -46,10 +46,10 @@ class Scorer(object):
 
 
     def get_score_fast(self, strings):
-        strings = [''.join(x) for x in strings]
-        scores = [self.get_score(string)[0] for string in strings]
-        return scores
         '''strings = [''.join(x) for x in strings]
+        scores = [self.get_score(string)[0] for string in strings]
+        return scores'''
+        strings = [''.join(x) for x in strings]
         history_to_update = defaultdict(lambda: 0.0)
         scores = []
         for string in strings:
@@ -62,15 +62,12 @@ class Scorer(object):
                 scores.append(self.history[string][0])
             elif string[:-1] in self.history:
                 score, hidden = self.history[string[:-1]]
-                history_to_update[string] = score - loss
-                input, grt = torch.LongTensor([self.vocab_map[string[-2]]]).view(1, 1).to(self.device), torch.LongTensor([self.vocab_map[string[-1]]]).to(self.device)
-                pred, hidden = self.rnn(input, hidden)
-                loss = self.criterion(pred.view(-1, pred.size(-1)), grt).item()
-                history_to_update[string] = (score-loss, hidden)
+                loss = self.get_score(string)[1]
+                history_to_update[string] = score-loss
                 scores.append(score-loss)
             else:
                 raise ValueError("%s not stored" % (string[:-1]))
         self.history = history_to_update
-        return scores'''
+        return scores
 
 
