@@ -270,9 +270,6 @@ def main():
     print('Loading weights from: %s' % model_cfg['language_model_pth'])
     languageModel = GPT2LMHeadModel.from_pretrained(model_cfg['language_model_pth'])
 
-
-    #languageModel = None
-
     # loading tokenizer from the saved model path
     tokenizer_save_path = "data/tokenized_data"
     tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_save_path)
@@ -290,7 +287,7 @@ def main():
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
-                   args.beam_size, device, None) # last param should be lm_scorer
+                   args.beam_size, device, lm_scorer) # last param should be lm_scorer
     print('Letter accuracy: %.2f%% @ scale %s' % (lev_acc, args.scale_x))
 
 
