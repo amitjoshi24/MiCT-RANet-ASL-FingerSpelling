@@ -35,7 +35,7 @@ class Scorer(object):
         outputs = self.languageModel(tensor_input, labels=tensor_input)
         loss = outputs.loss
         
-        return -(len(string_idx) - 1) * loss.item(), hidden
+        return -(len(tokenize_input) - 1) * loss.item(), hidden
 
 
     def get_score_fast(self, strings):
