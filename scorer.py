@@ -2,6 +2,7 @@ import sys
 import torch
 import torch.nn as nn
 from collections import defaultdict
+import math
 from math import log
 import numpy as np
 
@@ -22,7 +23,7 @@ class Scorer(object):
 
     def get_score(self, string):
         
-        print(string)
+        #print(string)
         
         tokenize_input = self.tokenizer.tokenize(string)
         #print ("tokenize_input: " + str(tokenize_input))
@@ -37,9 +38,11 @@ class Scorer(object):
         
         outputs = self.languageModel(tensor_input, labels=tensor_labels)
         loss = outputs.loss
-        if loss is np.nan:
-            loss = 100
-        return -(len(tokenize_input) - 1) * loss.item(), loss
+        if math.isnan(loss.item()) == True:
+            loss = 0
+        else:
+            loss = loss.item()
+        return -(len(tokenize_input) - 1) * loss, loss
 
 
     def get_score_fast(self, strings):
