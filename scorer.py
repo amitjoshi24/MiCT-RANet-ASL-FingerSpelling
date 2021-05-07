@@ -37,7 +37,7 @@ class Scorer(object):
         
         outputs = self.languageModel(tensor_input, labels=tensor_labels)
         loss = outputs.loss
-        if loss is np.nan:
+        if loss is nan:
             loss = 100
         return -(len(tokenize_input) - 1) * loss.item(), loss
 
