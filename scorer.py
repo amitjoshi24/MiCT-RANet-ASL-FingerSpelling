@@ -26,7 +26,7 @@ class Scorer(object):
         
         #print(string)
         string_idx = map(lambda x: self.vocab_map[x], string)
-        print (string_idx)
+        print ("whore: " + str(string_idx))
         tokenize_input = self.tokenizer.tokenize(string)
         #print ("tokenize_input: " + str(tokenize_input))
 
@@ -48,10 +48,10 @@ class Scorer(object):
 
 
     def get_score_fast(self, strings):
-        strings = [''.join(x) for x in strings]
-        scores = [self.get_score(string)[0] for string in strings]
-        return scores
         '''strings = [''.join(x) for x in strings]
+        scores = [self.get_score(string)[0] for string in strings]
+        return scores'''
+        strings = [''.join(x) for x in strings]
         history_to_update = defaultdict(0.0)
         scores = []
         for string in strings:
@@ -73,4 +73,6 @@ class Scorer(object):
             else:
                 raise ValueError("%s not stored" % (string[:-1]))
         self.history = history_to_update
-        return scores'''
+        return scores
+
+
