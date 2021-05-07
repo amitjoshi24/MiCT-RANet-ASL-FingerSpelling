@@ -286,7 +286,7 @@ def main():
     
     #encoder = train(encoder, train_loader, model_cfg.getint('img_size'),
     #model_cfg.getint('map_size'), inv_vocab_map, vocab_map, device, lm_scorer)
-    
+    #dsfjkl
  
     lev_acc = test(encoder, test_loader, model_cfg.getint('img_size'),
                    model_cfg.getint('map_size'), inv_vocab_map, vocab_map,
