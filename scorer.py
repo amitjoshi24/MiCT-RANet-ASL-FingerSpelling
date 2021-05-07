@@ -37,7 +37,7 @@ class Scorer(object):
         
         outputs = self.languageModel(tensor_input, labels=tensor_labels)
         loss = outputs.loss
-        if np.isnan(loss) == True:
+        if torch.isnan(loss.item()) == True:
             loss = 100
         return -(len(tokenize_input) - 1) * loss.item(), loss
 
