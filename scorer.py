@@ -61,15 +61,12 @@ class Scorer(object):
                 scores.append(score)
                 self.history[string] = score
             elif string in self.history:
-                self.history[string] = self.history[string]
                 scores.append(self.history[string])
-            elif string[:-1] in self.history:
-                score = self.history[string[:-1]]
-                loss = self.get_score(string)[1]
-                self.history[string] = score-loss
-                scores.append(score-loss)
             else:
-                raise ValueError("%s not stored" % (string[:-1]))
+                res = self.get_score(string)[0]
+                self.history[string] = res
+                scores.append(res)
+
 
         return scores
 
