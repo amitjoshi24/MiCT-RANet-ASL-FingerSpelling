@@ -52,6 +52,7 @@ class Scorer(object):
         strings = [''.join(x) for x in strings]
         #history_to_update = defaultdict(lambda: 0.0)
         scores = []
+        strings.sort()
         #print ("strings: " + str(strings))
         for string in strings:
             #print (string)
