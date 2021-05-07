@@ -132,6 +132,7 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
                 idx = merge_beam_idx.index(beam_str)
                 merge_beam_prob[idx] = np.logaddexp(merge_beam_prob[idx], beam_prob)
         
+        print(merge_beam_prob)
         if scorer is not None:
             merge_beam_prob_lm, ins_bonus, strings = [], [], []
             for b in range(len(merge_beam_prob)):
@@ -152,6 +153,7 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
                 """
                 merge_beam_prob_lm.append(total_score)
 
+        print(merge_beam_prob_lm)
         if scorer is None:
             ntopk_idx = np.argsort(np.array(merge_beam_prob))[-beam_size:].tolist()
         else:
