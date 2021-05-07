@@ -53,6 +53,7 @@ class Scorer(object):
         history_to_update = defaultdict(lambda: 0.0)
         scores = []
         for string in strings:
+            print (string)
             if len(string) <= 2:
                 score, hidden_state = self.get_score(string)
                 scores.append(score)
