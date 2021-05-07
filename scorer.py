@@ -40,7 +40,7 @@ class Scorer(object):
         loss = outputs.loss
         if math.isnan(loss.item()) == True:
             loss = 100
-        return -(len(tokenize_input) - 1) * loss.item(), loss
+        return -(len(tokenize_input) - 1) * loss, loss
 
 
     def get_score_fast(self, strings):
