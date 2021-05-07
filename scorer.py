@@ -50,26 +50,26 @@ class Scorer(object):
         scores = [self.get_score(string)[0] for string in strings]
         return scores'''
         strings = [''.join(x) for x in strings]
-        history_to_update = defaultdict(lambda: 0.0)
+        #history_to_update = defaultdict(lambda: 0.0)
         scores = []
-        print ("strings: " + str(strings))
+        #print ("strings: " + str(strings))
         for string in strings:
             #print (string)
             if len(string) <= 2:
                 score, hidden_state = self.get_score(string)
                 scores.append(score)
-                history_to_update[string] = score
+                self.history[string] = score
             elif string in self.history:
-                history_to_update[string] = self.history[string]
+                self.history[string] = self.history[string]
                 scores.append(self.history[string])
             elif string[:-1] in self.history:
                 score = self.history[string[:-1]]
                 loss = self.get_score(string)[1]
-                history_to_update[string] = score-loss
+                self.history[string] = score-loss
                 scores.append(score-loss)
             else:
                 raise ValueError("%s not stored" % (string[:-1]))
-        self.history = history_to_update
+
         return scores
 
 
