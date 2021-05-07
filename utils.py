@@ -173,7 +173,7 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
     if digit is False:
         pred = list(map(lambda x: int_to_char[x], pred))
 
-    print(pred)
+    print("beam decode new: " + str(pred))
     
     return pred
 
@@ -185,8 +185,8 @@ def beam_decode_old(prob, beam_size, int_to_char, char_to_int, digit=False, blan
     beam_prob = list(map(lambda x: math.log(prob[0, x]), beam_idx))
     beam_idx = list(map(lambda x: [x], beam_idx))
 
-    print (beam_idx)
-    print ("beamidx1: " + str(beam_idx))
+    #print (beam_idx)
+    #print ("beamidx1: " + str(beam_idx))
 
     for t in range(1, seqlen):
         topk_idx = np.argsort(prob[t, :])[-beam_size:].tolist()
@@ -222,10 +222,10 @@ def beam_decode_old(prob, beam_size, int_to_char, char_to_int, digit=False, blan
 
         ntopk_idx = np.argsort(np.array(merge_beam_prob))[-beam_size:].tolist()
         beam_idx = list(map(lambda x: merge_beam_idx[x], ntopk_idx))
-        print ("beamidx2: " + str(beam_idx))
+        #print ("beamidx2: " + str(beam_idx))
         for b in range(len(beam_idx)):
             beam_idx[b] = list(map(lambda x: char_to_int[x], beam_idx[b]))
-        print ("beamidx3: " + str(beam_idx))
+        #print ("beamidx3: " + str(beam_idx))
         beam_prob = list(map(lambda x: merge_beam_prob[x], ntopk_idx))
 
     if blank_index in beam_idx[-1]:
@@ -236,5 +236,5 @@ def beam_decode_old(prob, beam_size, int_to_char, char_to_int, digit=False, blan
     if digit is False:
         pred = list(map(lambda x: int_to_char[x], pred))
 
-    print (pred)
+    print ("beam decode old: " + str(pred))
     return pred
