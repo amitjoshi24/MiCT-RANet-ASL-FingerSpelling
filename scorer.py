@@ -22,7 +22,7 @@ class Scorer(object):
 
     def get_score(self, string):
         
-        print(string)
+        #print(string)
         
         tokenize_input = self.tokenizer.tokenize(string)
         #print ("tokenize_input: " + str(tokenize_input))
