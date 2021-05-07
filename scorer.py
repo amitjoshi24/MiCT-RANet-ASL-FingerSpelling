@@ -10,11 +10,7 @@ class Scorer(object):
         char_list = list(char_list) + ['sil_start', 'sil_end']
         self.inv_vocab_map = dict([(i, c) for (i, c) in enumerate(char_list)])
         self.vocab_map = dict([(c, i) for (i, c) in enumerate(char_list)])
-        self.criterion = nn.CrossEntropyLoss()
         self.device = device
-        self.rnn = RNN(rnn_type, len(char_list), ninp, nhid, nlayers).to(self.device)
-        self.rnn.load_state_dict(torch.load(model_path))
-        self.rnn.eval()
         self.history = defaultdict(tuple)'''
 
     def __init__(self, languageModel, tokenizer, device):
@@ -37,7 +33,6 @@ class Scorer(object):
         print ("outputs.loss: " + str(outputs.loss))
         return -log(abs(outputs.loss) + 1e-6), outputs.loss'''
         outputs = self.languageModel(tensor_input, labels=tensor_input)
-        hidden = outputs.hidden
         loss = outputs.loss
         
         return -(len(string_idx) - 1) * loss.item(), hidden
