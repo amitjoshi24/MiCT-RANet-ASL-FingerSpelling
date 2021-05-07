@@ -38,9 +38,9 @@ class Scorer(object):
 
         print ("outputs.loss: " + str(outputs.loss))
         return -log(abs(outputs.loss) + 1e-6), outputs.loss'''
-        loss=self.languageModel(tensor_input, labels=tensor_input)[0]
-        print (loss)
-        return np.exp(loss.detach().numpy()), loss
+        loss=self.languageModel(tensor_input, labels=tensor_input).loss
+        
+        return -(len(sentence) - 1) * log(loss), loss
 
 
     def get_score_fast(self, strings):
