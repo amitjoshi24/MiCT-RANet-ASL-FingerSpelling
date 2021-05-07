@@ -20,7 +20,7 @@ class Scorer(object):
         self.device = device
         self.languageModel.to(self.device)
         self.languageModel.eval()
-        self.history = defaultdict(0.0)
+        self.history = defaultdict(lambda: 0.0)
 
     def get_score(self, string):
         
@@ -48,11 +48,11 @@ class Scorer(object):
 
 
     def get_score_fast(self, strings):
-        '''strings = [''.join(x) for x in strings]
-        scores = [self.get_score(string)[0] for string in strings]
-        return scores'''
         strings = [''.join(x) for x in strings]
-        history_to_update = defaultdict(0.0)
+        scores = [self.get_score(string)[0] for string in strings]
+        return scores
+        '''strings = [''.join(x) for x in strings]
+        history_to_update = defaultdict(lambda: 0.0)
         scores = []
         for string in strings:
             if len(string) <= 2:
@@ -73,6 +73,6 @@ class Scorer(object):
             else:
                 raise ValueError("%s not stored" % (string[:-1]))
         self.history = history_to_update
-        return scores
+        return scores'''
 
 
