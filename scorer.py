@@ -62,7 +62,7 @@ class Scorer(object):
                 history_to_update[string] = self.history[string]
                 scores.append(self.history[string][0])
             elif string[:-1] in self.history:
-                score, hidden = self.history[string[:-1]]
+                score = self.history[string[:-1]]
                 loss = self.get_score(string)[1]
                 history_to_update[string] = score-loss
                 scores.append(score-loss)
