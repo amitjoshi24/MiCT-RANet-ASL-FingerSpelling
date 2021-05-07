@@ -145,9 +145,11 @@ def beam_decode(prob, beam_size, int_to_char, char_to_int, digit=False, scorer=N
                 
             for b in range(len(merge_beam_prob)):
                 total_score = merge_beam_prob[b] + beta * lm_scores[b] + gamma * ins_bonus[b]
+                """
                 print ("merge_beam_prob: " + str(merge_beam_prob[b]))
                 print("lm_scores: " + str(lm_scores[b]))
                 print("ins_bonus: " + str(ins_bonus[b]))
+                """
                 merge_beam_prob_lm.append(total_score)
 
         if scorer is None:
