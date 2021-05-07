@@ -21,6 +21,9 @@ class Scorer(object):
         self.history = defaultdict(lambda: 0.0)
 
     def get_score(self, string):
+        
+        print(string)
+        
         tokenize_input = self.tokenizer.tokenize(string)
         
         while len(tokenize_input) < 2:
