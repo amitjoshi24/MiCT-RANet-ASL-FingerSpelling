@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from collections import defaultdict
 from math import log
+import numpy as np
 
 class Scorer(object):
     '''def __init__(self, char_list, model_path, rnn_type, ninp, nhid, nlayers, device):
@@ -33,10 +34,12 @@ class Scorer(object):
         #print ("tokenize_input: " + str(tokenize_input))
         tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)]).to(self.device)
         #print ("tensor_input: " + str(tensor_input))
-        outputs=self.languageModel(tensor_input, labels=tensor_input)
+        '''outputs=self.languageModel(tensor_input, labels=tensor_input)
 
         print ("outputs.loss: " + str(outputs.loss))
-        return -log(abs(outputs.loss) + 1e-6), outputs.loss
+        return -log(abs(outputs.loss) + 1e-6), outputs.loss'''
+        loss=self.languageModel(tensor_input, labels=tensor_input)[0]
+        return np.exp(loss.detach().numpy()), loss
 
 
     def get_score_fast(self, strings):
