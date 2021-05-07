@@ -18,6 +18,7 @@ class Scorer(object):
         self.tokenizer = tokenizer
         self.device = device
         self.languageModel.to(self.device)
+        self.history = defaultdict(lambda: 0.0)
 
     def get_score(self, string):
         tokenize_input = self.tokenizer.tokenize(string)
@@ -25,14 +26,10 @@ class Scorer(object):
         if len(tokenize_input) < 1:
             tokenize_input.append('<unk>')
 
-        #print ("tokenize_input: " + str(tokenize_input))
-        tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input)]).to(self.device)
-        #print ("tensor_input: " + str(tensor_input))
-        '''outputs=self.languageModel(tensor_input, labels=tensor_input)
-
-        print ("outputs.loss: " + str(outputs.loss))
-        return -log(abs(outputs.loss) + 1e-6), outputs.loss'''
-        outputs = self.languageModel(tensor_input, labels=tensor_input)
+        tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input[:-1])]).to(self.device)
+        tensor_labels = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input[1:])]).to(self.device)
+        
+        outputs = self.languageModel(tensor_input, labels=tensor_labels)
         loss = outputs.loss
         
         return -(len(tokenize_input) - 1) * loss.item(), loss
@@ -42,4 +39,3 @@ class Scorer(object):
         strings = [''.join(x) for x in strings]
         scores = [self.get_score(string)[0] for string in strings]
         return scores
-
