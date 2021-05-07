@@ -23,8 +23,8 @@ class Scorer(object):
     def get_score(self, string):
         tokenize_input = self.tokenizer.tokenize(string)
         
-        if len(tokenize_input) < 1:
-            tokenize_input.append('<unk>')
+        while len(tokenize_input) < 2:
+            tokenize_input.append('<pad>')
 
         tensor_input = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input[:-1])]).to(self.device)
         tensor_labels = torch.tensor([self.tokenizer.convert_tokens_to_ids(tokenize_input[1:])]).to(self.device)
