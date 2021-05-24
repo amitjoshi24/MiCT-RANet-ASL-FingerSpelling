@@ -1,4 +1,4 @@
-Amit Joshi's ad Gunjan Bhattarai's Research Project on Exploring the Transferability of Transformer Language Models on Sign Language Recognition.  Final project for Professor David Harwath's CS 395T Spoken Language Technologies.  Adding a Transformer Language Model trained on wikipedia titles during decoding improved results - see our paper in this repo "Exploring ..." Forked from fmahoudeau/MiCT-RANet-ASL-FingerSpelling - description below.
+Amit Joshi's and Gunjan Bhattarai's Research Project on Exploring the Transferability of Transformer Language Models on Sign Language Recognition.  Final project for Professor David Harwath's CS 395T Spoken Language Technologies.  Adding a Transformer Language Model trained on wikipedia titles during decoding improved results - see our paper in this repo "Exploring Transferability of Transformer Language Models on Sign Language Recognition" Forked from fmahoudeau/MiCT-RANet-ASL-FingerSpelling - description below.
 
 # MiCT-RANet for ASL Fingerspelling
 
